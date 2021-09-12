@@ -1,4 +1,3 @@
-def gv
 pipeline {
     agent any 
     tools {
@@ -17,9 +16,7 @@ pipeline {
             steps {
                 script {
                     echo "Building The Docker Image...."
-                    withCredentials([
-                        usernamePassword(credentials: 'dockerhub_creds',usernameVariable: 'USER', passwordVariable: 'PASS')
-                    ]) {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub_creds',usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                         sh 'docker build -t mohey/demo-app:2.0 .'
                         sh 'echo $PASS | docker login -u $USER --password-stdin'
                         sh 'docker push mohey/demo-app:2.0'
