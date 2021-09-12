@@ -3,15 +3,21 @@ pipeline {
     
     stages {
         stage('build') {
-            echo "Building App..."
+            steps {
+               echo "Building App..."
+            }
         }
 
         stage('test') {
-            echo "Testing App...."
+            steps {
+              echo "Testing App...."
+            }
         }
 
         stage('Deploy') {
-            echo "Deploying App...."
+            steps {
+                 echo "Deploying App...."
+            }
         }
     }
 }
