@@ -1,7 +1,9 @@
 pipeline {
     agent any 
-    environment {
-        SERVER_CREDS = credentials('server-creds')
+
+    parameters {
+        choice(name: 'VERSION', choices: ['1.1','1.2','1.3'])
+        booleanParam(name: 'executeTests', defaultValue: true)
     }
     stages {
         stage('build') {
@@ -12,6 +14,11 @@ pipeline {
         }
 
         stage('test') {
+            when {
+                expression {
+                    params.executeTests 
+                }
+            }
             steps {
               echo "Testing App...."
             }
@@ -20,7 +27,7 @@ pipeline {
         stage('Deploy') {
             steps {
                  echo "Deploying App...."
-                sh "echo ${SERVER_CREDS} > /tmp/out.txt" 
+                 echo "Version ${params.VERSION}"
             }
         }
     }
