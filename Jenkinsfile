@@ -5,10 +5,19 @@ pipeline {
         maven 'jenkins-maven'
     }
     stages {
+        
         stage('init') {
             steps {
                 script {
                     gv = load 'script.groovy'
+                }
+            }
+        }
+
+        stage('Increment Version') {
+            steps {
+                script {
+                    gv.incrementVersion()
                 }
             }
         }
