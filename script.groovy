@@ -29,4 +29,22 @@ def incrementVersion() {
     def version = matcher[0][1]
     env.IMAGE_NAME = "$version-$BUILD_NUMBER"
 }
+
+def versionUpdate() { 
+    withCredentials([
+      usernamePassword(credentialsId: 'github_creds', usernameVariable: 'Github_User', passwordVariable: 'Github_Pass')
+    ]) {
+       sh """
+            git config user.email jenkins@test.com
+            git config user.name  jenkins
+            git status
+            git branch
+            git config --list 
+            git remote set-url origin https://${Github_User}:${Github_Pass}@github.com/M0H3Y/java-maven.git
+            git add pom.xml
+            git commit -m "Jenkins Update Version In pom.xml"
+            git push origin jenkins-jobs
+        """
+    }
+}
 return this
