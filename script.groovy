@@ -42,7 +42,7 @@ def versionUpdate() {
             git commit -m "Jenkins Update Version In pom.xml"
             git push origin HEAD:jenkins-jobs
 
-            echo 'Test'
+            echo 'Testing Multibranch Pipeline'
 
         """
     }
