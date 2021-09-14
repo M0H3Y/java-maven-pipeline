@@ -19,17 +19,19 @@ def buildDockerImage() {
 def deploy() {
     echo "Deploying The App To ec2..."
     // def dockerCmd = "docker run -d -p 8080:8080 mohey/demo-app:${IMAGE_NAME}"
-    def dockerComposeCmd = "docker-compose up -d"
+    // def dockerComposeCmd = "docker-compose up -d"
+    def shellCmd = "bash ./server-deployment.sh"
     sshagent(['ec2-server-creds']) {
+        sh "scp server-deployment.sh ec2-user@15.236.51.141:/home/ec2-user/"
         sh "scp docker-compose.yaml ec2-user@15.236.51.141:/home/ec2-user/"
-        sh "ssh -o StrictHostKeyChecking=no ec2-user@15.236.51.141 ${dockerComposeCmd}"
+        sh "ssh -o StrictHostKeyChecking=no ec2-user@15.236.51.141 ${shellCmd}"
     }
 }
 
 
 def incrementVersion() {
     echo "Incrementing App Version....."
-    sh 'mvn build-helper:parse-version versions:set \
+    sh 'mvn build-helper:parse-version versions:set \س
          -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} versions:commit'
     def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
     def version = matcher[0][1]
