@@ -20,7 +20,7 @@ def deploy() {
     echo "Deploying The App To ec2..."
     // def dockerCmd = "docker run -d -p 8080:8080 mohey/demo-app:${IMAGE_NAME}"
     // def dockerComposeCmd = "docker-compose up -d"
-    def shellCmd = "bash ./server-deployment.sh"
+    def shellCmd = "bash ./server-deployment.sh ${IMAGE_NAME}"
     sshagent(['ec2-server-creds']) {
         sh "scp server-deployment.sh ec2-user@15.236.51.141:/home/ec2-user/"
         sh "scp docker-compose.yaml ec2-user@15.236.51.141:/home/ec2-user/"
