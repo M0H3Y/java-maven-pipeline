@@ -17,7 +17,11 @@ def buildDockerImage() {
 }
 
 def deploy() {
-    echo "Deploying The App"
+    echo "Deploying The App To ec2..."
+    def dockerCmd = "docker run -d -p 8080:8080 mohey/demo-app:${IMAGE_NAME}"
+    sshagent(['ec2-server-creds']) {
+        sh "ssh -o StrictHostKeyChecking=no ec2-user@15.236.51.141 ${dockerCmd}"
+    }
 }
 
 
