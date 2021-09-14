@@ -1,0 +1,15 @@
+version: '3.0'
+services:
+    mvn-app:
+       image: mohey/demo-app:1.1.34-9
+       ports: 
+         - 8080:8080
+
+    db:
+      image: postgres:13
+      ports: 
+        - 5432:5432
+      environment: 
+        - POSTGRES_PASSWORD=mypassword
+      
+
