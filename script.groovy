@@ -37,13 +37,11 @@ def versionUpdate() {
        sh """
             git config user.email jenkins@test.com
             git config user.name  jenkins
-            git status
-            git branch
-            git config --list 
             git remote set-url origin https://${Github_User}:${Github_Pass}@github.com/M0H3Y/java-maven.git
             git add pom.xml
             git commit -m "Jenkins Update Version In pom.xml"
             git push origin HEAD:jenkins-jobs
+
         """
     }
 }
