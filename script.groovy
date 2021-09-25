@@ -4,12 +4,12 @@ def buildJar() {
 }
 def buildDockerImage() {
     echo "Building The Docker Image...."
-    withCredentials([usernamePassword(credentialsId: 'dockerhub_creds',usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+    withCredentials([usernamePassword(credentialsId: 'ecr-credentials',usernameVariable: 'USER', passwordVariable: 'PASS')]) {
         sh """
 
-        docker build -t mohey/demo-app:${IMAGE_NAME} .
-        echo $PASS | docker login -u $USER --password-stdin
-        docker push mohey/demo-app:${IMAGE_NAME}
+        docker build -t ${DOCKER_REPO}:${IMAGE_NAME} .
+        echo $PASS | docker login -u $USER --password-stdin 387244584756.dkr.ecr.eu-west-3.amazonaws.com
+        docker push DOCKER_REPO:${IMAGE_NAME}
 
         """
     }

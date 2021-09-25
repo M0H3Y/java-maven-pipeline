@@ -4,6 +4,10 @@ pipeline {
         maven 'jenkins-maven'
     }
 
+    environment {
+        DOCKER_REPO = '387244584756.dkr.ecr.eu-west-3.amazonaws.com/java-maven-app'
+    }
+
     stages {
     
         stage('init') {
