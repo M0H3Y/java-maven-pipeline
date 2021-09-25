@@ -9,7 +9,7 @@ def buildDockerImage() {
 
         docker build -t ${DOCKER_REPO}:${IMAGE_NAME} .
         echo $PASS | docker login -u $USER --password-stdin 387244584756.dkr.ecr.eu-west-3.amazonaws.com
-        docker push DOCKER_REPO:${IMAGE_NAME}
+        docker push ${DOCKER_REPO}:${IMAGE_NAME}
 
         """
     }
