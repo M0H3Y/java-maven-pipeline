@@ -2,7 +2,9 @@ pipeline {
     agent any 
 
     stages {
-        
+        tools {
+            maven 'jenkins-maven'
+        }
         stage('init') {
             steps {
                 script {
