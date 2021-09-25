@@ -2,10 +2,26 @@ pipeline {
     agent any 
 
     stages {
-        stage('Build') {
+        
+        stage('init') {
             steps {
                 script {
-                    echo "Building The App.."
+                    gv = load 'script.groovy'
+                }
+            }
+        }
+
+        stage('Increment Version') {
+            steps {
+                script {
+                    gv.incrementVersion()
+                }
+            }
+        }
+        stage('Build Jar ') {
+            steps {
+                script {
+                    gv.buildJar()
                 }
             }
         }
@@ -13,7 +29,7 @@ pipeline {
         stage('Build Image') {
             steps {
                 script {
-                    echo "Building The Docker Image..."
+                    gv.buildDockerImage()
                 }
             }
         }
@@ -25,13 +41,18 @@ pipeline {
 
             }
             steps {
-                script {
-                    echo "Deploying The App.."
-                    sh 'kubectl create deployment nginx-deployment --image=nginx'
-                }
+                gv.deploy()
             }
+        
         }
 
-
+        stage('Commit Version Update') {
+            steps {
+                script {
+                    gv.versionUpdate()
+                }
+            }
+        }        
     }
+
 }

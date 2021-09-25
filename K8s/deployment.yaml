@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: $APP_NAME
+spec:
+  selector:
+    matchLabels:
+      app: $APP_NAME
+  template:
+    metadata:
+      labels:
+        app: $APP_NAME
+    spec:
+      imagePullSecrets:
+        - name: my-registry-key
+      containers:
+      - name: $APP_NAME
+        image: mohey/demo-app:$IMAGE_NAME
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
