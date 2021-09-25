@@ -18,8 +18,8 @@ def buildDockerImage() {
 
 def deploy() {
     echo "Deploying The App.."
-    sh 'envsubst <  K8s/deployment.yaml kubectl apply -f -'
-    sh 'envsubst <  K8s/service.yaml kubectl apply -f -'
+    sh 'envsubst <  K8s/deployment.yaml |  kubectl apply -f -'
+    sh 'envsubst <  K8s/service.yaml | kubectl apply -f -'
 
 }
 
