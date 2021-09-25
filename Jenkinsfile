@@ -3,20 +3,8 @@ pipeline {
 
     stages {
 
-        stage('test') {
-            steps {
-                script {
-                    echo "Testing The App.."
-                    echo "Executing The Pipeline For Branch $BRANCH_NAME"
-                }
-            }
-        }
+        
         stage('Build') {
-            when {
-                expression {
-                    BRANCH_NAME == 'master'
-                }
-            }
             steps {
                 script {
                     echo "Building The App.."
@@ -24,16 +12,24 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            when {
-                expression {
-                    BRANCH_NAME == 'master'
+        stage('Build Image') {
+            steps {
+                script {
+                    echo "Building The Docker Image..."
                 }
             }
+        }
 
+        stage('Deploy') {
+            envirornment {
+                AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key_id')
+                AWS_SECRET_ACCESS_KEY = credentials('jenkins_aws_secret_access_key')
+                
+            }
             steps {
                 script {
                     echo "Deploying The App.."
+                    sh 'kubectl create deployment nginx-deployment --image=nginx'
                 }
             }
         }
