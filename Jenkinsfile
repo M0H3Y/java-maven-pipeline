@@ -14,13 +14,6 @@ pipeline {
             }
         }
 
-        stage('Increment Version') {
-            steps {
-                script {
-                    gv.incrementVersion()
-                }
-            }
-        }
         stage('Build Jar ') {
             steps {
                 script {
@@ -35,22 +28,31 @@ pipeline {
                 }
             }
         }
+        stage ('provision server') {
+            environment {
+                AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key_id')
+                AWS_SECRET_ACCESS_KEY = credentials('jenkins_aws_secret_access_key')
+                TF_VAR_env_prefix = 'test'
+            }
+            steps {
+                script {
+                    dir('terraform') {
+                        gv.provisionServer()
+
+                    }
+                }
+            }
+        }
         stage('Deploy') {
             steps {
                 script {
+                    sleep(time: 90, unit: "SECONDS")
+                    echo "Waiting for EC2 to initialize....."
                     gv.deploy()
                 }
             }
         
         }
-
-        stage('Commit Version Update') {
-            steps {
-                script {
-                    gv.versionUpdate()
-                }
-            }
-        }        
     }
 
 }

@@ -16,43 +16,27 @@ def buildDockerImage() {
 
 }
 
+def provisionServer() {
+    sh """
+      terraform init 
+      terraform apply -auto-approve
+      """ 
+
+    EC2_IP = sh(
+        script: "terraform output instance_public_ip",
+        returnStdout: true 
+    ).trim()
+}
 def deploy() {
     echo "Deploying The App To ec2..."
     // def dockerCmd = "docker run -d -p 8080:8080 mohey/demo-app:${IMAGE_NAME}"
     // def dockerComposeCmd = "docker-compose up -d"
     def shellCmd = "bash ./server-deployment.sh ${IMAGE_NAME}"
-    sshagent(['ec2-server-creds']) {
-        sh "scp server-deployment.sh ec2-user@15.236.51.141:/home/ec2-user/"
-        sh "scp docker-compose.yaml ec2-user@15.236.51.141:/home/ec2-user/"
-        sh "ssh -o StrictHostKeyChecking=no ec2-user@15.236.51.141 ${shellCmd}"
+    sshagent(['server-ssh-key']) {
+        sh "scp -o StrictHostKeyChecking=no server-deployment.sh ec2-user@${EC2_IP}:/home/ec2-user/"
+        sh "scp -o StrictHostKeyChecking=no docker-compose.yaml ec2-user@${EC2_IP}:/home/ec2-user/"
+        sh "ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} ${shellCmd}"
     }
 }
 
-
-def incrementVersion() {
-    echo "Incrementing App Version....."
-    sh 'mvn build-helper:parse-version versions:set \
-         -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} versions:commit'
-    def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
-    def version = matcher[0][1]
-    env.IMAGE_NAME = "$version-$BUILD_NUMBER"
-}
-
-def versionUpdate() { 
-    withCredentials([
-      usernamePassword(credentialsId: 'github_creds', usernameVariable: 'Github_User', passwordVariable: 'Github_Pass')
-    ]) {
-       sh """
-            git config user.email jenkins@test.com
-            git config user.name  jenkins
-            git remote set-url origin https://${Github_User}:${Github_Pass}@github.com/M0H3Y/java-maven.git
-            git add pom.xml
-            git commit -m "Jenkins Update Version In pom.xml"
-            git push origin HEAD:jenkins-jobs
-
-            echo 'Testing Multibranch Pipeline.....'
-
-        """
-    }
-}
 return this
