@@ -2,6 +2,12 @@ def buildJar() {
     echo "Building The App...."
     sh 'mvn clean package'
 }
+def getImageVersion() {
+    def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
+    def version = matcher[0][1]
+    env.IMAGE_NAME = "$version-$BUILD_NUMBER"
+
+}
 def buildDockerImage() {
     echo "Building The Docker Image...."
     withCredentials([usernamePassword(credentialsId: 'dockerhub_creds',usernameVariable: 'USER', passwordVariable: 'PASS')]) {
