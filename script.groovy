@@ -34,6 +34,9 @@ def provisionServer() {
     ).trim()
 }
 def deploy() {
+    environment {
+        DOCKER_CREDS = credentials('dockerhub_creds')
+    }
     echo "Deploying The App To ec2..."
     // def dockerCmd = "docker run -d -p 8080:8080 mohey/demo-app:${IMAGE_NAME}"
     // def dockerComposeCmd = "docker-compose up -d"
