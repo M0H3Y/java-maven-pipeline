@@ -34,10 +34,11 @@ def provisionServer() {
     ).trim()
 }
 def deploy() {
+    environment {
+        DOCKER_CREDS = credentials('dockerhub_creds')
+    }
     echo "Deploying The App To ec2..."
-    // def dockerCmd = "docker run -d -p 8080:8080 mohey/demo-app:${IMAGE_NAME}"
-    // def dockerComposeCmd = "docker-compose up -d"
-    def shellCmd = "bash ./server-deployment.sh ${IMAGE_NAME}"
+    def shellCmd = "bash ./server-deployment.sh ${IMAGE_NAME} ${DOCKER_CREDS_USR} ${DOCKER_CREDS_PSW}"
     sshagent(['server-ssh-key']) {
         sh "scp -o StrictHostKeyChecking=no server-deployment.sh ec2-user@${EC2_IP}:/home/ec2-user/"
         sh "scp -o StrictHostKeyChecking=no docker-compose.yaml ec2-user@${EC2_IP}:/home/ec2-user/"
