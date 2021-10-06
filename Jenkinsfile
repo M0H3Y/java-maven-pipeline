@@ -46,6 +46,9 @@ pipeline {
             }
         }
         stage('Deploy') {
+            environment {
+                 DOCKER_CREDS = credentials('dockerhub_creds')
+            }
             steps {
                 script {
                     sleep(time: 90, unit: "SECONDS")

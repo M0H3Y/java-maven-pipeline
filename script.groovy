@@ -34,9 +34,7 @@ def provisionServer() {
     ).trim()
 }
 def deploy() {
-    environment {
-        DOCKER_CREDS = credentials('dockerhub_creds')
-    }
+
     echo "Deploying The App To ec2..."
     def shellCmd = "bash ./server-deployment.sh ${IMAGE_NAME} ${DOCKER_CREDS_USR} ${DOCKER_CREDS_PSW}"
     sshagent(['server-ssh-key']) {
